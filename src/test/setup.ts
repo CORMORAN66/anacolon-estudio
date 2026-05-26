@@ -1,3 +1,4 @@
+/// <reference types="vitest/globals" />
 import '@testing-library/jest-dom'
 // Mock next/navigation for tests
 vi.mock('next/navigation', () => ({
