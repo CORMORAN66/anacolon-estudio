@@ -3,10 +3,14 @@ import Image from 'next/image'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Sparkles } from 'lucide-react'
-import type { Product } from '@/lib/supabase/types'
-
 interface ProductCardProps {
-  product: Pick<Product, 'slug' | 'name' | 'cover_image_url' | 'collection' | 'product_categories'>
+  product: {
+    slug: string
+    name: string
+    cover_image_url: string | null
+    collection: string | null
+    product_categories?: { name: string } | null
+  }
 }
 
 export function ProductCard({ product }: ProductCardProps) {

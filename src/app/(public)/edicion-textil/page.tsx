@@ -2,6 +2,16 @@ import type { Metadata } from 'next'
 import { createClient } from '@/lib/supabase/server'
 import { Container } from '@/components/ui/container'
 import { ProductCard } from '@/components/public/ProductCard'
+import type { ProductCategory } from '@/lib/supabase/types'
+
+type ProductRow = {
+  id: string
+  slug: string
+  name: string
+  cover_image_url: string | null
+  collection: string | null
+  product_categories: Pick<ProductCategory, 'id' | 'name' | 'slug'> | null
+}
 
 export const metadata: Metadata = {
   title: 'Edición Textil',
@@ -11,7 +21,7 @@ export const metadata: Metadata = {
 export default async function EdicionTextilPage() {
   const supabase = await createClient()
 
-  const [{ data: categories }, { data: products }] = await Promise.all([
+  const [{ data: categories }, { data: rawProducts }] = await Promise.all([
     supabase
       .from('product_categories')
       .select('id, name, slug')
@@ -23,9 +33,11 @@ export default async function EdicionTextilPage() {
       .order('sort_order', { ascending: true }),
   ])
 
+  const products = rawProducts as ProductRow[] | null
+
   const productsByCategory = (categories ?? []).map((cat) => ({
     ...cat,
-    products: (products ?? []).filter((p) => (p.product_categories as any)?.id === cat.id),
+    products: (products ?? []).filter((p) => p.product_categories?.id === cat.id),
   }))
 
   return (
@@ -50,7 +62,7 @@ export default async function EdicionTextilPage() {
                 {cat.products.map((product) => (
                   <ProductCard
                     key={product.id}
-                    product={product as any}
+                    product={product}
                   />
                 ))}
               </div>
@@ -58,7 +70,7 @@ export default async function EdicionTextilPage() {
           ) : null
         )}
 
-        {!products?.length && (
+        {!rawProducts?.length && (
           <p className="text-center text-muted py-20">Catálogo próximamente disponible.</p>
         )}
       </Container>
