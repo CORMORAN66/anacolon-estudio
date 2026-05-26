@@ -41,7 +41,7 @@ export function Header() {
           <button
             className="md:hidden p-2"
             onClick={() => setOpen(!open)}
-            aria-label="Abrir menú"
+            aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
           >
             {open ? <X size={20} /> : <Menu size={20} />}
           </button>
