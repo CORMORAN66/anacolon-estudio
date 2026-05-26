@@ -7,7 +7,7 @@ export function VisualizerTeaser() {
   return (
     <section className="bg-ink text-white py-20">
       <div className="max-w-4xl mx-auto px-4 text-center">
-        <Sparkles className="mx-auto mb-6 text-gold" size={36} />
+        <Sparkles className="mx-auto mb-6 text-gold" size={36} aria-hidden="true" />
         <h2 className="font-heading text-4xl font-bold mb-4">
           ¿Cómo quedaría en tu espacio?
         </h2>
