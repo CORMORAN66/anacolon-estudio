@@ -72,5 +72,6 @@ export interface Testimonial {
   client_name: string
   project_type: string | null
   quote: string
+  active: boolean
   sort_order: number
 }
