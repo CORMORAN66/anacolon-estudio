@@ -9,7 +9,6 @@
   --color-gold: #C9A96E;
   --color-off-white: #F9F7F4;
   --color-ink: #1A1A1A;
-  --color-muted: #888888;
   --font-heading: var(--font-heading), Georgia, serif;
   --font-body: var(--font-body), system-ui, sans-serif;
   --font-size-display: clamp(2.5rem, 6vw, 5rem);
@@ -39,7 +38,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-accent: var(--accent);
   --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
+  --color-muted: #888888; /* brand muted — overrides shadcn's --muted intentionally */
   --color-secondary-foreground: var(--secondary-foreground);
   --color-secondary: var(--secondary);
   --color-primary-foreground: var(--primary-foreground);
