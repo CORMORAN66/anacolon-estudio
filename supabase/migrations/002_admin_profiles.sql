@@ -20,9 +20,10 @@ create policy "admin can read own profile"
 
 -- Add notes and updated_at to leads
 alter table leads add column if not exists notes text;
-alter table leads add column if not exists updated_at timestamptz default now();
+alter table leads add column if not exists updated_at timestamptz not null default now();
 
 -- Trigger updated_at on leads
+drop trigger if exists leads_updated_at on leads;
 create trigger leads_updated_at
   before update on leads
   for each row execute function update_updated_at();
