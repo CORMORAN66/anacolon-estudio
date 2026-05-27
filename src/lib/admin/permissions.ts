@@ -10,6 +10,7 @@ const PERMISSIONS: Record<AdminRole, string[]> = {
     '/admin/leads',
     '/admin/testimonios',
     '/admin/usuarios',
+    '/admin/hero',
   ],
   editor: [
     '/admin/dashboard',
@@ -17,6 +18,7 @@ const PERMISSIONS: Record<AdminRole, string[]> = {
     '/admin/productos',
     '/admin/blog',
     '/admin/testimonios',
+    '/admin/hero',
   ],
   comercial: [
     '/admin/dashboard',

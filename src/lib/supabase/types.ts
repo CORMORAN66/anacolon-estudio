@@ -76,6 +76,23 @@ export interface Testimonial {
   sort_order: number
 }
 
+export interface HeroSlide {
+  id: string
+  sort_order: number
+  active: boolean
+  media_type: 'image' | 'video_url' | 'video_file'
+  image_url: string | null
+  video_url: string | null
+  audio_url: string | null
+  focal_x: number
+  focal_y: number
+  overlay_title: string | null
+  overlay_subtitle: string | null
+  cta_text: string | null
+  cta_url: string | null
+  created_at: string
+}
+
 export type AdminRole = 'superadmin' | 'editor' | 'comercial'
 
 export interface AdminProfile {
