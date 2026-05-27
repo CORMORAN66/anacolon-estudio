@@ -23,6 +23,15 @@ export const metadata: Metadata = {
   description:
     'Estudio de interiorismo consciente en Madrid. Espacios con alma, diseñados con dedicación y personalización absolutos.',
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? 'https://anacolonestudio.com'),
+  openGraph: {
+    siteName: 'Ana Colón Estudio',
+    locale: 'es_ES',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+  },
+  keywords: ['interiorismo Madrid', 'diseño de interiores consciente', 'edición textil', 'decoración Madrid'],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
