@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { Container } from '@/components/ui/container'
 import { PostCard } from '@/components/public/PostCard'
 
@@ -9,12 +9,17 @@ export const metadata: Metadata = {
 }
 
 export default async function BlogPage() {
-  const supabase = await createClient()
-  const { data: posts } = await supabase
-    .from('posts')
-    .select('id, slug, title, excerpt, cover_image_url, category, published_at, reading_time_minutes')
-    .eq('published', true)
-    .order('published_at', { ascending: false })
+  let posts: { id: string; slug: string; title: string; excerpt: string | null; cover_image_url: string | null; category: string | null; published_at: string | null; reading_time_minutes: number | null }[] | null = null
+
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient()
+    const { data } = await supabase
+      .from('posts')
+      .select('id, slug, title, excerpt, cover_image_url, category, published_at, reading_time_minutes')
+      .eq('published', true)
+      .order('published_at', { ascending: false })
+    posts = data
+  }
 
   return (
     <div className="py-16 md:py-24">

@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { Container } from '@/components/ui/container'
 import { ProductCard } from '@/components/public/ProductCard'
 import type { ProductCategory } from '@/lib/supabase/types'
@@ -19,21 +19,27 @@ export const metadata: Metadata = {
 }
 
 export default async function EdicionTextilPage() {
-  const supabase = await createClient()
+  let categories: { id: string; name: string; slug: string }[] | null = null
+  let rawProducts: ProductRow[] | null = null
 
-  const [{ data: categories }, { data: rawProducts }] = await Promise.all([
-    supabase
-      .from('product_categories')
-      .select('id, name, slug')
-      .order('sort_order', { ascending: true }),
-    supabase
-      .from('products')
-      .select('id, slug, name, cover_image_url, collection, product_categories(id, name, slug)')
-      .eq('active', true)
-      .order('sort_order', { ascending: true }),
-  ])
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient()
+    const [{ data: cats }, { data: prods }] = await Promise.all([
+      supabase
+        .from('product_categories')
+        .select('id, name, slug')
+        .order('sort_order', { ascending: true }),
+      supabase
+        .from('products')
+        .select('id, slug, name, cover_image_url, collection, product_categories(id, name, slug)')
+        .eq('active', true)
+        .order('sort_order', { ascending: true }),
+    ])
+    categories = cats
+    rawProducts = prods as ProductRow[] | null
+  }
 
-  const products = rawProducts as ProductRow[] | null
+  const products = rawProducts
 
   const productsByCategory = (categories ?? []).map((cat) => ({
     ...cat,

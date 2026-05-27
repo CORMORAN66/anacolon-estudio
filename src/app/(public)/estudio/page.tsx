@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import type { Metadata } from 'next'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { Container } from '@/components/ui/container'
 import { ProjectCard } from '@/components/public/ProjectCard'
 import { ProjectFilters } from '@/components/public/ProjectFilters'
@@ -17,20 +17,20 @@ interface PageProps {
 
 export default async function EstudioPage({ searchParams }: PageProps) {
   const { tipo } = await searchParams
-  const supabase = await createClient()
-  let query = supabase
-    .from('projects')
-    .select('id, slug, name, type, city, cover_image_url, short_description')
-    .eq('published', true)
-    .order('sort_order', { ascending: true })
 
-  if (tipo) {
-    query = query.eq('type', tipo)
+  let projects: Pick<Project, 'id' | 'slug' | 'name' | 'type' | 'city' | 'cover_image_url' | 'short_description'>[] | null = null
+
+  if (isSupabaseConfigured()) {
+    const supabase = await createClient()
+    let query = supabase
+      .from('projects')
+      .select('id, slug, name, type, city, cover_image_url, short_description')
+      .eq('published', true)
+      .order('sort_order', { ascending: true })
+    if (tipo) query = query.eq('type', tipo)
+    const { data: rawProjects } = await query
+    projects = rawProjects as Pick<Project, 'id' | 'slug' | 'name' | 'type' | 'city' | 'cover_image_url' | 'short_description'>[] | null
   }
-
-  const { data: rawProjects } = await query
-
-  const projects = rawProjects as Pick<Project, 'id' | 'slug' | 'name' | 'type' | 'city' | 'cover_image_url' | 'short_description'>[] | null
 
   return (
     <div className="py-16 md:py-24">

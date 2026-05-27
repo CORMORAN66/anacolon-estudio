@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { Container } from '@/components/ui/container'
 import { Section } from '@/components/ui/section'
 import type { Project } from '@/lib/supabase/types'
@@ -12,6 +12,7 @@ const TYPE_LABEL: Record<Project['type'], string> = {
 }
 
 export async function FeaturedProjects() {
+  if (!isSupabaseConfigured()) return null
   const supabase = await createClient()
   const { data: rawProjects } = await supabase
     .from('projects')

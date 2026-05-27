@@ -1,8 +1,9 @@
-import { createClient } from '@/lib/supabase/server'
+import { createClient, isSupabaseConfigured } from '@/lib/supabase/server'
 import { Container } from '@/components/ui/container'
 import { Section } from '@/components/ui/section'
 
 export async function TestimonialsSection() {
+  if (!isSupabaseConfigured()) return null
   const supabase = await createClient()
   const { data: testimonials } = await supabase
     .from('testimonials')
