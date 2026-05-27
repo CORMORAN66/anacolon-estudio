@@ -1,10 +1,11 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import type { AdminRole } from '@/lib/supabase/types'
 import { getAllowedSections } from '@/lib/admin/permissions'
+import { createClient } from '@/lib/supabase/client'
 
 const NAV_ITEMS = [
   { href: '/admin/dashboard', label: 'Dashboard', section: '/admin/dashboard' },
@@ -25,7 +26,14 @@ interface AdminSidebarProps {
 
 export function AdminSidebar({ role }: AdminSidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
   const allowed = getAllowedSections(role)
+
+  async function handleLogout() {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/admin/login')
+  }
 
   const isActive = (section: string) =>
     pathname === section || pathname.startsWith(section + '/')
@@ -75,6 +83,15 @@ export function AdminSidebar({ role }: AdminSidebarProps) {
           </>
         )}
       </nav>
+
+      <div className="px-3 py-4 border-t border-zinc-100">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center px-3 py-2 rounded-lg text-sm text-zinc-500 hover:bg-red-50 hover:text-red-600 transition-colors"
+        >
+          Cerrar sesión
+        </button>
+      </div>
     </aside>
   )
 }
