@@ -75,3 +75,28 @@ export interface Testimonial {
   active: boolean
   sort_order: number
 }
+
+export type AdminRole = 'superadmin' | 'editor' | 'comercial'
+
+export interface AdminProfile {
+  id: string
+  full_name: string
+  role: AdminRole
+  active: boolean
+  created_at: string
+}
+
+export interface LeadFull {
+  id: string
+  name: string
+  email: string
+  phone: string | null
+  inquiry_type: string
+  message: string | null
+  product_id: string | null
+  source: string
+  status: 'new' | 'contacted' | 'in_project' | 'archived'
+  notes: string | null
+  created_at: string
+  updated_at: string | null
+}
