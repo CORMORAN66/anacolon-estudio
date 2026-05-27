@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { createServiceClient } from '@/lib/supabase/server'
-import { deleteHeroSlide, toggleHeroSlideActive } from '@/lib/admin/actions/hero'
+import { toggleHeroSlideActive } from '@/lib/admin/actions/hero'
+import { DeleteSlideButton } from '@/components/admin/DeleteSlideButton'
 import type { HeroSlide } from '@/lib/supabase/types'
 
 function TypeBadge({ type }: { type: HeroSlide['media_type'] }) {
@@ -133,19 +134,7 @@ export default async function HeroAdminPage() {
                 >
                   Editar
                 </Link>
-                <form
-                  action={deleteHeroSlide.bind(null, slide.id)}
-                  onSubmit={(e) => {
-                    if (!confirm('¿Eliminar este slide?')) e.preventDefault()
-                  }}
-                >
-                  <button
-                    type="submit"
-                    className="text-xs px-3 py-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
-                  >
-                    Eliminar
-                  </button>
-                </form>
+                <DeleteSlideButton id={slide.id} />
               </div>
             </div>
           ))}
