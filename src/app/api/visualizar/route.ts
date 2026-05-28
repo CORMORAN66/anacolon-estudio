@@ -13,6 +13,22 @@ async function fetchAsFile(url: string, filename: string): Promise<File> {
   return new File([arrayBuffer], filename, { type: contentType })
 }
 
+function isAllowedUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url)
+    // Only allow https and known Supabase storage domain
+    if (parsed.protocol !== 'https:') return false
+    const supabaseHost = process.env.NEXT_PUBLIC_SUPABASE_URL
+      ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname
+      : null
+    if (supabaseHost && parsed.hostname === supabaseHost) return true
+    // Also allow blob: URLs won't reach here (resolved client-side before this call)
+    return false
+  } catch {
+    return false
+  }
+}
+
 function buildPrompt(productNames: string[]): string {
   const list = productNames.join(', ')
   return (
@@ -65,11 +81,23 @@ export async function POST(request: NextRequest) {
     )
   }
 
+  // Validate URLs to prevent SSRF
+  const allUrls = [roomImageUrl, ...products.map((p) => p.imageUrl)]
+  if (allUrls.some((u) => !isAllowedUrl(u))) {
+    return NextResponse.json({ error: 'Invalid image URL' }, { status: 400 })
+  }
+
   // Fetch images as File objects for OpenAI
-  const roomFile = await fetchAsFile(roomImageUrl, 'room.jpg')
-  const productFiles = await Promise.all(
-    products.map((p, i) => fetchAsFile(p.imageUrl, `product-${i}.jpg`))
-  )
+  let roomFile: File
+  let productFiles: File[]
+  try {
+    roomFile = await fetchAsFile(roomImageUrl, 'room.jpg')
+    productFiles = await Promise.all(
+      products.map((p, i) => fetchAsFile(p.imageUrl, `product-${i}.jpg`))
+    )
+  } catch {
+    return NextResponse.json({ error: 'Failed to fetch one or more images' }, { status: 500 })
+  }
 
   // Call gpt-image-1 — room photo + product images as context
   const prompt = buildPrompt(products.map((p) => p.name))
@@ -106,10 +134,13 @@ export async function POST(request: NextRequest) {
   } = supabase.storage.from('visualizaciones').getPublicUrl(resultFilename)
 
   // Upsert usage count (increment by 1)
-  await supabase.from('visualizer_usage').upsert(
+  const { error: upsertError } = await supabase.from('visualizer_usage').upsert(
     { ip, fingerprint, date: today, count: currentCount + 1 },
     { onConflict: 'ip,fingerprint,date' }
   )
+  if (upsertError) {
+    console.error('Usage upsert error:', upsertError)
+  }
 
   return NextResponse.json({
     resultUrl,
