@@ -1,6 +1,5 @@
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import Image from 'next/image'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/server'
@@ -8,6 +7,7 @@ import { Container } from '@/components/ui/container'
 import { buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 import { Sparkles } from 'lucide-react'
+import { ProductGallery } from '@/components/public/ProductGallery'
 
 interface PageProps { params: Promise<{ slug: string }> }
 
@@ -54,36 +54,11 @@ export default async function ProductPage({ params }: PageProps) {
       <Container>
         <div className="grid lg:grid-cols-2 gap-16 items-start">
           {/* Gallery */}
-          <div>
-            {product.cover_image_url && (
-              <div className="relative aspect-square rounded-2xl overflow-hidden bg-zinc-100 mb-4">
-                <Image
-                  src={product.cover_image_url}
-                  alt={`${product.name} — ${category?.name ?? 'Edición Textil'} por Ana Colón Estudio`}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                />
-              </div>
-            )}
-            {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.slice(0, 4).map((src: string, i: number) => (
-                  <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-zinc-100">
-                    <Image
-                      src={src}
-                      alt={`${product.name} detalle ${i + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="25vw"
-                      loading="lazy"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <ProductGallery
+            coverImageUrl={product.cover_image_url ?? ''}
+            images={product.images}
+            productName={product.name}
+          />
 
           {/* Info */}
           <div className="lg:sticky lg:top-24">
