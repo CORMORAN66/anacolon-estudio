@@ -14,9 +14,15 @@ const productSchema = z.object({
   material: z.string().optional(),
   dimensions: z.string().optional(),
   cover_image_url: z.string().url().optional().or(z.literal('')),
+  ai_reference_image_url: z.string().url().optional().or(z.literal('')),
+  images: z.string().default('[]'),
   active: z.coerce.boolean().optional(),
   sort_order: z.coerce.number().int().default(0),
 })
+
+function parseImages(raw: string): string[] {
+  try { return JSON.parse(raw) } catch { return [] }
+}
 
 export async function createProduct(formData: FormData) {
   const raw = Object.fromEntries(formData)
@@ -27,7 +33,8 @@ export async function createProduct(formData: FormData) {
     ...parsed.data,
     category_id: parsed.data.category_id === '' ? null : parsed.data.category_id,
     cover_image_url: parsed.data.cover_image_url === '' ? null : parsed.data.cover_image_url,
-    images: [],
+    ai_reference_image_url: parsed.data.ai_reference_image_url === '' ? null : parsed.data.ai_reference_image_url,
+    images: parseImages(parsed.data.images),
   }
 
   const supabase = createServiceClient()
@@ -47,6 +54,8 @@ export async function updateProduct(id: string, formData: FormData) {
     ...parsed.data,
     category_id: parsed.data.category_id === '' ? null : parsed.data.category_id,
     cover_image_url: parsed.data.cover_image_url === '' ? null : parsed.data.cover_image_url,
+    ai_reference_image_url: parsed.data.ai_reference_image_url === '' ? null : parsed.data.ai_reference_image_url,
+    images: parseImages(parsed.data.images),
   }
 
   const supabase = createServiceClient()
