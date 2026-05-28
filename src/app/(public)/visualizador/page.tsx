@@ -29,6 +29,9 @@ export default function VisualizadorPage() {
   const [showLeadModal, setShowLeadModal] = useState(false)
   const [fingerprint, setFingerprint] = useState('')
 
+  const [placementDescription, setPlacementDescription] = useState('')
+  const [includePeople, setIncludePeople] = useState(false)
+
   const [leadName, setLeadName] = useState('')
   const [leadEmail, setLeadEmail] = useState('')
   const [leadPhone, setLeadPhone] = useState('')
@@ -121,6 +124,8 @@ export default function VisualizadorPage() {
           roomImageUrl,
           products: resolvedProducts,
           fingerprint,
+          placementDescription: placementDescription.trim() || undefined,
+          includePeople: includePeople || undefined,
         }),
       })
 
@@ -300,6 +305,41 @@ export default function VisualizadorPage() {
             className="hidden"
             onChange={handleProductFile}
           />
+        </section>
+
+        {/* Placement + people options */}
+        <section className="mb-6 space-y-3">
+          <div>
+            <label className="block text-sm font-semibold text-[#1A1A1A] mb-1">
+              ¿Dónde quieres colocar los productos?{' '}
+              <span className="text-gray-400 font-normal">(opcional)</span>
+            </label>
+            <textarea
+              value={placementDescription}
+              onChange={(e) => setPlacementDescription(e.target.value)}
+              placeholder="Ej: Las telas en las cortinas de la ventana derecha y una alfombra en el centro del salón"
+              rows={2}
+              maxLength={300}
+              className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder-gray-400 bg-white outline-none focus:ring-2 focus:ring-[#C9A96E] resize-none"
+            />
+          </div>
+          <label className="flex items-center gap-3 cursor-pointer select-none group">
+            <div
+              onClick={() => setIncludePeople((v) => !v)}
+              className={`w-10 h-5 rounded-full transition-colors flex-shrink-0 relative ${
+                includePeople ? 'bg-[#C9A96E]' : 'bg-gray-200'
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
+                  includePeople ? 'translate-x-5' : 'translate-x-0'
+                }`}
+              />
+            </div>
+            <span className="text-sm text-[#1A1A1A]">
+              Incluir personas en la escena para mayor realismo
+            </span>
+          </label>
         </section>
 
         {/* Error */}

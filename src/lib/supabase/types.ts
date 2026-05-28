@@ -111,6 +111,8 @@ export interface VisualizarRequest {
   roomImageUrl: string
   products: VisualizerProduct[]
   fingerprint: string
+  placementDescription?: string
+  includePeople?: boolean
 }
 
 export interface VisualizarResponse {
