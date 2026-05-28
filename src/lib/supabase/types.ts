@@ -112,7 +112,7 @@ export interface VisualizarRequest {
   products: VisualizerProduct[]
   fingerprint: string
   placementDescription?: string
-  includePeople?: boolean
+  peopleCount?: number
 }
 
 export interface VisualizarResponse {

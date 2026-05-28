@@ -32,7 +32,7 @@ function isAllowedUrl(url: string): boolean {
 function buildPrompt(
   productNames: string[],
   placementDescription?: string,
-  includePeople?: boolean
+  peopleCount?: number
 ): string {
   const list = productNames.join(', ')
   let prompt =
@@ -42,8 +42,9 @@ function buildPrompt(
   if (placementDescription) {
     prompt += ` Place the products specifically in these locations: ${placementDescription}.`
   }
-  if (includePeople) {
-    prompt += ` Include one or two people naturally occupying the space for realism.`
+  if (peopleCount && peopleCount > 0) {
+    const label = peopleCount === 1 ? 'one person' : `${peopleCount} people`
+    prompt += ` Include exactly ${label} naturally occupying the space for realism, dressed elegantly and in proportion with the room.`
   }
   prompt += ` Result must look realistic and professionally styled.`
   return prompt
@@ -57,7 +58,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON' }, { status: 400 })
   }
 
-  const { roomImageUrl, products, fingerprint, placementDescription, includePeople } = body
+  const { roomImageUrl, products, fingerprint, placementDescription, peopleCount } = body
 
   if (!roomImageUrl || !fingerprint || !Array.isArray(products) || products.length === 0) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
@@ -110,7 +111,7 @@ export async function POST(request: NextRequest) {
   }
 
   // Call gpt-image-1 — room photo + product images as context
-  const prompt = buildPrompt(products.map((p) => p.name), placementDescription, includePeople)
+  const prompt = buildPrompt(products.map((p) => p.name), placementDescription, peopleCount)
   const openaiResponse = await openai.images.edit({
     model: 'gpt-image-1',
     image: [roomFile, ...productFiles],

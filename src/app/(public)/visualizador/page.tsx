@@ -30,7 +30,8 @@ export default function VisualizadorPage() {
   const [fingerprint, setFingerprint] = useState('')
 
   const [placementDescription, setPlacementDescription] = useState('')
-  const [includePeople, setIncludePeople] = useState(false)
+  const [peopleCount, setPeopleCount] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
 
   const [leadName, setLeadName] = useState('')
   const [leadEmail, setLeadEmail] = useState('')
@@ -125,7 +126,7 @@ export default function VisualizadorPage() {
           products: resolvedProducts,
           fingerprint,
           placementDescription: placementDescription.trim() || undefined,
-          includePeople: includePeople || undefined,
+          peopleCount: peopleCount > 0 ? peopleCount : undefined,
         }),
       })
 
@@ -323,23 +324,28 @@ export default function VisualizadorPage() {
               className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-[#1A1A1A] placeholder-gray-400 bg-white outline-none focus:ring-2 focus:ring-[#C9A96E] resize-none"
             />
           </div>
-          <label className="flex items-center gap-3 cursor-pointer select-none group">
-            <div
-              onClick={() => setIncludePeople((v) => !v)}
-              className={`w-10 h-5 rounded-full transition-colors flex-shrink-0 relative ${
-                includePeople ? 'bg-[#C9A96E]' : 'bg-gray-200'
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform ${
-                  includePeople ? 'translate-x-5' : 'translate-x-0'
-                }`}
-              />
+          <div>
+            <label className="block text-sm font-semibold text-[#1A1A1A] mb-2">
+              Personas en la escena{' '}
+              <span className="text-gray-400 font-normal">(opcional, para mayor realismo)</span>
+            </label>
+            <div className="flex gap-2">
+              {[0, 1, 2, 3, 4].map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setPeopleCount(n)}
+                  className={`px-3 py-1.5 rounded-full text-sm font-medium border transition ${
+                    peopleCount === n
+                      ? 'bg-[#1A1A1A] text-white border-[#1A1A1A]'
+                      : 'bg-white text-gray-600 border-gray-200 hover:border-[#C9A96E]'
+                  }`}
+                >
+                  {n === 0 ? 'Ninguna' : n === 1 ? '1 persona' : `${n} personas`}
+                </button>
+              ))}
             </div>
-            <span className="text-sm text-[#1A1A1A]">
-              Incluir personas en la escena para mayor realismo
-            </span>
-          </label>
+          </div>
         </section>
 
         {/* Error */}
@@ -409,13 +415,25 @@ export default function VisualizadorPage() {
               </div>
               <div>
                 <p className="text-xs text-center text-[#C9A96E] mb-1 uppercase tracking-wide font-semibold">
-                  Resultado IA
+                  Tu espacio reimaginado
                 </p>
-                <img
-                  src={resultUrl}
-                  alt="Resultado IA"
-                  className="w-full h-64 object-cover rounded-xl"
-                />
+                <button
+                  type="button"
+                  onClick={() => setLightboxOpen(true)}
+                  className="relative w-full h-64 rounded-xl overflow-hidden group block"
+                  aria-label="Ver imagen ampliada"
+                >
+                  <img
+                    src={resultUrl}
+                    alt="Tu espacio reimaginado"
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 transition bg-white/90 text-[#1A1A1A] text-xs font-semibold px-3 py-1 rounded-full">
+                      Ver ampliada
+                    </span>
+                  </div>
+                </button>
               </div>
             </div>
             <div className="flex gap-3">
@@ -448,6 +466,32 @@ export default function VisualizadorPage() {
           onClose={() => setShowCatalog(false)}
           selectedNames={products.map((p) => p.name)}
         />
+      )}
+
+      {/* Lightbox */}
+      {lightboxOpen && resultUrl && (
+        <div
+          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+          onClick={() => setLightboxOpen(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tu espacio reimaginado"
+        >
+          <button
+            type="button"
+            onClick={() => setLightboxOpen(false)}
+            className="absolute top-4 right-4 text-white/70 hover:text-white text-3xl leading-none"
+            aria-label="Cerrar"
+          >
+            ×
+          </button>
+          <img
+            src={resultUrl}
+            alt="Tu espacio reimaginado"
+            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
       )}
 
       {/* Lead capture modal */}
