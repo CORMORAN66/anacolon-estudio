@@ -93,6 +93,31 @@ export interface HeroSlide {
   created_at: string
 }
 
+export interface VisualizerUsage {
+  id: string
+  ip: string
+  fingerprint: string
+  count: number
+  date: string
+  created_at: string
+}
+
+export interface VisualizerProduct {
+  name: string
+  imageUrl: string
+}
+
+export interface VisualizarRequest {
+  roomImageUrl: string
+  products: VisualizerProduct[]
+  fingerprint: string
+}
+
+export interface VisualizarResponse {
+  resultUrl: string
+  generationsLeft: number
+}
+
 export type AdminRole = 'superadmin' | 'editor' | 'comercial'
 
 export interface AdminProfile {
