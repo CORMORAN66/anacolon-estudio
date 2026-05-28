@@ -12,6 +12,7 @@ const NAV_ITEMS = [
   { href: '/admin/hero', label: 'Hero', section: '/admin/hero' },
   { href: '/admin/proyectos', label: 'Proyectos', section: '/admin/proyectos' },
   { href: '/admin/productos', label: 'Productos', section: '/admin/productos' },
+  { href: '/admin/categorias', label: 'Categorías', section: '/admin/categorias' },
   { href: '/admin/blog', label: 'Blog', section: '/admin/blog' },
   { href: '/admin/leads', label: 'Leads', section: '/admin/leads' },
   { href: '/admin/testimonios', label: 'Testimonios', section: '/admin/testimonios' },
