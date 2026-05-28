@@ -16,7 +16,8 @@ export async function POST(req: NextRequest) {
 
   const formData = await req.formData()
   const file = formData.get('file') as File | null
-  const folder = (formData.get('folder') as string) || 'products'
+  const rawFolder = formData.get('folder') as string
+  const folder = ['products', 'projects'].includes(rawFolder) ? rawFolder : 'products'
 
   const validationError = validateUploadFile(file)
   if (validationError) return NextResponse.json({ error: validationError }, { status: 400 })
