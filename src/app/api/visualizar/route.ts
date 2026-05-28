@@ -38,7 +38,12 @@ function buildPrompt(
   let prompt =
     `Interior design visualization. Preserve the room's exact structure, ` +
     `lighting, perspective and proportions. Naturally incorporate these ` +
-    `design elements: ${list}.`
+    `textile and furnishing products: ${list}. ` +
+    `CRITICAL: These are physical fabric and furnishing materials — install them as they ` +
+    `would appear in a real interior (as curtains, upholstery, rugs, cushions, etc.). ` +
+    `Preserve the exact pattern scale, repeat density, and texture grain of every fabric — ` +
+    `do NOT enlarge, zoom into, or distort patterns; a herringbone must look like herringbone, ` +
+    `a stripe must look like a stripe, at real-world fabric scale.`
   if (placementDescription) {
     prompt += ` Place the products specifically in these locations: ${placementDescription}.`
   }
